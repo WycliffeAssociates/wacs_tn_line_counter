@@ -1,3 +1,17 @@
 {
-  "extends": "astro/tsconfigs/strict"
+  "extends": "astro/tsconfigs/strict",
+
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "baseUrl": ".",
+    "target": "ESNext",
+    "module": "ESNext",
+    "noErrorTruncation": true,
+    "types": ["astro/client"],
+    "paths": {
+      "@layouts/*": ["src/layouts/*"]
+    }
+  },
+  "types": ["astro/client"]
 }
