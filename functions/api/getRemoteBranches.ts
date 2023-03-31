@@ -1,4 +1,4 @@
-export const onRequestGet = async (context) => {
+export const onRequestGet: PagesFunction = async (context) => {
   const request: Request = context.request;
   const env = context.env;
   // const env = context.env as IcfEnv & typeof context.env;

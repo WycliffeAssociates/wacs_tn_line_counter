@@ -1,27 +1,14 @@
-import {
-  createResource,
-  createSignal,
-  Show,
-  For,
-  batch,
-  createMemo,
-} from "solid-js";
+import {createSignal, Show, For, createMemo} from "solid-js";
 import {createStore, produce} from "solid-js/store";
-
 import {unzip, strFromU8, FlateError, Unzipped} from "fflate";
-import {BIBLE_BOOK_ORDER} from "src/constants";
+import {BIBLE_BOOK_ORDER} from "@constants";
 import type {
-  IBranchType,
-  IRepo,
-  ITableStructure,
-  ITable,
   IRepoBook,
   IRepoVerse,
   IRepoChapter,
-  ITableRepoType,
   ITableBetter,
-} from "src/customTypes";
-import {BookTable} from "./BookTable";
+} from "@customTypes";
+import {BookTable} from "@components/BookTable";
 
 interface ITableWrapper {
   baseUrl: string;
@@ -34,7 +21,6 @@ interface ITableWrapper {
 
 export function TableWrapper(props: ITableWrapper) {
   const [isFetchingLoading, setIsFetchingLoading] = createSignal("");
-  const [forceRerenderOfTable, setForceRerenderOfTable] = createSignal(false);
   const [repoState, setRepoState] = createSignal({
     username: props.user,
     // repo: props.repo,
@@ -242,7 +228,7 @@ export function TableWrapper(props: ITableWrapper) {
       repoState().username
     }&repo=${repoState().repo}`;
     const resp = await fetch(url);
-    const data = await resp.json();
+    const data = (await resp.json()) as {name: string}[];
     setBranches((prev) => {
       return [
         {
@@ -339,9 +325,7 @@ export function TableWrapper(props: ITableWrapper) {
         </form>
       </div>
       <Show when={isFetchingLoading()}>{isFetchingLoading()}</Show>
-      <Show
-        when={reposWithContentFetch()?.hasFetched && !forceRerenderOfTable()}
-      >
+      <Show when={reposWithContentFetch()?.hasFetched}>
         <BookTable data={reposWithContentFetch()?.data} />
       </Show>
     </div>

@@ -1,26 +1,15 @@
 ---
 import Layout from "@layouts/Layout.astro"
-import { PreviewPane } from "src/components/PreviewPane"
-import { TableWrapper } from "src/components/TableWrapper"
-
+import { PreviewPane } from "@components/PreviewPane"
+import { TableWrapper } from "@components/TableWrapper"
 const baseUrl = "https://content.bibletranslationtools.org/api/v1/repos"
-
-
 let { repo, user } = Astro.params
-
 const branchesUrl = `${baseUrl}/${user}/${repo}/branches`
-let branchesRes: Response
-try {
-	branchesRes = await fetch(branchesUrl);
+const branchesRes = await fetch(branchesUrl);
 	if (!branchesRes.ok)  {
 		return new Response(404)
 	}
-} catch (error) {
-	console.error(error)
-	return new Response(404)
-
-}
-const branchesJson = await branchesRes.json()
+const branchesJson: {name:string}[] = await branchesRes.json()
 ---
 
 <Layout title="Welcome to Astro.">
@@ -35,7 +24,6 @@ const branchesJson = await branchesRes.json()
 				<li>4. Zip is already uploaded, so I was gonna offer a button to download any given repo/book/chapter if they wanted. </li>
 				<li> 5. Could count words if they prefer. Or show size of any given file / book etc (also easy since its all being unzipped from byte array) </li>
 			</ol> -->
-
 			<div class="flex gap-2">
 				<div class="w-3/5">
 					<TableWrapper client:load branches={branchesJson} baseUrl={baseUrl} repo={String(repo)} user={String(user)} />

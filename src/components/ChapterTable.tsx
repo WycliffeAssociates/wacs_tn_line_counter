@@ -1,23 +1,18 @@
 import {
   flexRender,
   getCoreRowModel,
-  ColumnDef,
   createSolidTable,
   createColumnHelper,
   SortingState,
   getSortedRowModel,
-  ExpandedState,
   getExpandedRowModel,
   Row,
 } from "@tanstack/solid-table";
-import remarkHtml from "remark-html";
-import remarkParse from "remark-parse";
-import {unified} from "unified";
 import {createMemo, createSignal, For, Show} from "solid-js";
-import type {IRepoBucket, IRepoChapter, IRepoVerse} from "src/customTypes";
-import {TableRow} from "./TableRow";
-import {Icon} from "./Icon";
-import {VerseTable} from "./VerseTable";
+import type {IRepoBucket, IRepoChapter, IRepoVerse} from "@customTypes";
+import {TableRow} from "@components/TableRow";
+import {Icon} from "@components/Icon";
+import {VerseTable} from "@components/VerseTable";
 
 type ChapterTableProps = {
   bookList: IRepoChapter[];
@@ -57,7 +52,6 @@ export function ChapterTable(props: ChapterTableProps) {
               }
               return matchingChapter?.chapterLineCount;
             },
-            // "chapterLineCount",
             {
               header: branch.branchName,
               id: `${repo.repoName}-${branch.branchName}`,
@@ -98,10 +92,6 @@ export function ChapterTable(props: ChapterTableProps) {
       header: "Chapter Number",
     }),
     ...addlCols(),
-    // columnHelper.accessor("chapterLineCount", {
-    //   cell: (chap) => chap.getValue(),
-    //   header: "Chapter Line Count",
-    // }),
   ];
   const table = () =>
     createSolidTable({
@@ -119,7 +109,6 @@ export function ChapterTable(props: ChapterTableProps) {
       getExpandedRowModel: getExpandedRowModel(),
       getRowCanExpand: () => true,
       columns: columns,
-      // debugTable: true,
     });
   const renderVersesTable = (row: Row<IRepoChapter>) => {
     function getVersesForChapter(
@@ -151,7 +140,7 @@ export function ChapterTable(props: ChapterTableProps) {
       />
     );
   };
-  function db(row) {
+  function db(row: Row<IRepoChapter>) {
     const isExp = expandedRows().includes(row.id);
     return isExp;
   }

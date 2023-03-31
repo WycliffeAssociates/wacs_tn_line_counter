@@ -1,32 +1,24 @@
 import {
   flexRender,
   getCoreRowModel,
-  ColumnDef,
   createSolidTable,
   createColumnHelper,
   SortingState,
   getSortedRowModel,
-  ExpandedState,
   getExpandedRowModel,
   Row,
 } from "@tanstack/solid-table";
 import {createMemo, createSignal, For, Show} from "solid-js";
 import type {
-  IBranchType,
-  IRepo,
   IRepoBook,
   IRepoBucket,
   IRepoChapter,
-  IRepository,
-  ITable,
   ITableBetter,
   ITableBetterEntry,
-  ITableRepoType,
-  ITableStructure,
-} from "src/customTypes";
-import {ChapterTable} from "./ChapterTable";
-import {TableRow} from "./TableRow";
-import {Icon} from "./Icon";
+} from "@customTypes";
+import {ChapterTable} from "@components/ChapterTable";
+import {TableRow} from "@components/TableRow";
+import {Icon} from "@components/Icon";
 
 type IBookTable = {
   data: ITableBetter;
@@ -162,15 +154,6 @@ export function BookTable(props: IBookTable) {
       (book) => book.name.toUpperCase() == row.bookName.toUpperCase()
     );
     return matchingBook?.totalLineCount || "";
-    // console.count(argBranch);
-    // console.count(argRepoName);
-    // const repo = row.repositories.find((repo) => repo.name == argRepoName);
-    // const matchingBranchForThisData =
-    //   repo && repo.branches.find((branch) => branch.branchName == argBranch);
-    // const matchingLineCount =
-    //   matchingBranchForThisData &&
-    //   matchingBranchForThisData.data?.totalLineCount;
-    // return matchingLineCount || "";
   }
 
   const table = () =>
@@ -189,22 +172,14 @@ export function BookTable(props: IBookTable) {
       getExpandedRowModel: getExpandedRowModel(),
       getRowCanExpand: () => true,
       columns: cols(),
-      // debugAll: true,
-
-      // debugTable: true,
     });
-  /*  Type 'ColumnDef<[string, ITableRepoType], unknown>[]' is not assignable to type 'ColumnDef<[string, ITableRepoType], any>' */
   const renderChaptersTable = (row: Row<ITableBetterEntry>) => {
-    // row.original.bookName
     function getChaptersForBook(
       entries: ITableBetterEntry[],
       bookName: string
     ): IRepoChapter[] {
       const chapters: IRepoChapter[] = [];
       const uniqueChapters = new Set<string>();
-
-      // find the entry for the specified bookName
-
       const entry = entries.find((e) => e.bookName === bookName);
 
       // if the entry is found, map the branches to chapters with bookParent set to bookName
@@ -235,11 +210,6 @@ export function BookTable(props: IBookTable) {
 
     const chaps = getChaptersForBook(props.data, row.original.bookName);
     const colsByRepoBranch = repoBuckets2();
-    // const chapterProps = () => {
-    //   return createIRepoChapterArray(colsByRepoBranch);
-    // };
-    // 1. Arr of chapters col
-    // 2. addl cols will be Col group for repoBuckets2.  I.e. each repo, and its respective branches.
 
     return (
       <ChapterTable
@@ -249,7 +219,7 @@ export function BookTable(props: IBookTable) {
       />
     );
   };
-  function db(row) {
+  function db(row: Row<ITableBetterEntry>) {
     const isExp = expandedRows().includes(row.id);
     return isExp;
   }

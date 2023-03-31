@@ -2,31 +2,31 @@ lockfileVersion: 5.4
 
 specifiers:
   '@astrojs/cloudflare': 6.1.3
-  '@astrojs/solid-js': ^2.0.2
+  '@astrojs/solid-js': 2.0.2
   '@cloudflare/workers-types': ^4.20230221.0
   '@iconify-json/mdi': ^1.1.50
   '@tanstack/solid-table': ^8.8.4
   '@unocss/preset-icons': ^0.50.6
   '@unocss/reset': ^0.50.6
   '@unocss/transformer-variant-group': ^0.49.7
-  astro: ^2.0.14
+  astro: 2.0.14
   fflate: ^0.7.4
   remark-html: ^15.0.2
   remark-parse: ^10.0.1
-  solid-js: ^1.6.11
+  solid-js: 1.6.11
   unified: ^10.1.2
   unocss: ^0.50.6
   wrangler: ^2.11.0
 
 dependencies:
-  '@astrojs/cloudflare': 6.1.3_astro@2.1.7
-  '@astrojs/solid-js': 2.1.0_3zvilkfo52p64wgwqlopnxhvw4
-  '@tanstack/solid-table': 8.8.4_solid-js@1.6.16
-  astro: 2.1.7
+  '@astrojs/cloudflare': 6.1.3_astro@2.0.14
+  '@astrojs/solid-js': 2.0.2_wue7wbvxpsnwzm6xsf3kl26fea
+  '@tanstack/solid-table': 8.8.4_solid-js@1.6.11
+  astro: 2.0.14
   fflate: 0.7.4
   remark-html: 15.0.2
   remark-parse: 10.0.1
-  solid-js: 1.6.16
+  solid-js: 1.6.11
   unified: 10.1.2
 
 devDependencies:
@@ -62,12 +62,12 @@ packages:
     resolution: {integrity: sha512-vy9fM3pIxZmX07dL+VX1aZe7ynZ+YyB0jY+jE6r3hOK6GNY2t6W8rzpFC4tgpbXUYABkFQwgJq2XYXlxbXAI0g==}
     dev: true
 
-  /@astrojs/cloudflare/6.1.3_astro@2.1.7:
+  /@astrojs/cloudflare/6.1.3_astro@2.0.14:
     resolution: {integrity: sha512-RKYW6RxFWb6QqcNbMpKl1M87tJ8lDMTBy1iGu/vD4WSJ/XDcTYsXneVYvShikkjv6dGWM7yCOUA3/j/yg0WJwA==}
     peerDependencies:
       astro: ^2.0.11
     dependencies:
-      astro: 2.1.7
+      astro: 2.0.14
       esbuild: 0.15.18
       tiny-glob: 0.2.9
     dev: false
@@ -98,13 +98,13 @@ packages:
       vscode-uri: 3.0.7
     dev: false
 
-  /@astrojs/markdown-remark/2.1.2_astro@2.1.7:
+  /@astrojs/markdown-remark/2.1.2_astro@2.0.14:
     resolution: {integrity: sha512-rYkmFEv2w7oEk6ZPgxHkhWzwcxSUGc1vJU0cbCu5sHF8iFNnc1cmMsjXWa5DrU5sCEf8VVYE1iFlbbnFzvHQJw==}
     peerDependencies:
       astro: ^2.1.5
     dependencies:
       '@astrojs/prism': 2.1.1
-      astro: 2.1.7
+      astro: 2.0.14
       github-slugger: 1.5.0
       import-meta-resolve: 2.2.2
       rehype-raw: 6.1.1
@@ -128,14 +128,14 @@ packages:
       prismjs: 1.29.0
     dev: false
 
-  /@astrojs/solid-js/2.1.0_3zvilkfo52p64wgwqlopnxhvw4:
-    resolution: {integrity: sha512-p07DP9NRWJPjtF+CzPZ9lzOMkoyw6wSs3S6g3OZUxR+DVQy3VIXXDqCcnZZVJI34VakkHuViZaoNNkBW/9I54w==}
+  /@astrojs/solid-js/2.0.2_wue7wbvxpsnwzm6xsf3kl26fea:
+    resolution: {integrity: sha512-fQMOfBcmvYHXJg8vR0LgoeBgrlLHrxnlzxxmPkDKrGPBRh9y3si2d/ChpMyMRL3ibAOqWTs7Xs5gOYqrFZbw3g==}
     engines: {node: '>=16.12.0'}
     peerDependencies:
       solid-js: ^1.4.3
     dependencies:
       babel-preset-solid: 1.6.16_@babel+core@7.21.3
-      solid-js: 1.6.16
+      solid-js: 1.6.11
       vitefu: 0.2.4_vite@4.2.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -1114,14 +1114,14 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@tanstack/solid-table/8.8.4_solid-js@1.6.16:
+  /@tanstack/solid-table/8.8.4_solid-js@1.6.11:
     resolution: {integrity: sha512-uSY8Y0seXu2Ct17CX1vik9ThEh6GBlPdLBdvF3TluXEAM3IvXtI7HzMymCC/TMeHYuoqYzHEyEBnLSZjtl848w==}
     engines: {node: '>=12'}
     peerDependencies:
       solid-js: ^1.3.13
     dependencies:
       '@tanstack/table-core': 8.8.4
-      solid-js: 1.6.16
+      solid-js: 1.6.11
     dev: false
 
   /@tanstack/table-core/8.8.4:
@@ -1470,6 +1470,7 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
+    dev: true
 
   /argparse/1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
@@ -1481,19 +1482,14 @@ packages:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
     dev: false
 
-  /astro/2.1.7:
-    resolution: {integrity: sha512-Eaq8/mJTx+kbghfW5ZEJ8rKiEduo03Rn6R/fp/gJGpBSRm/0FiVxVsrpq5SV4kUPrttEi1zMEnEc2GP6JWfXeg==}
+  /astro/2.0.14:
+    resolution: {integrity: sha512-BiXnHyK3rj5Uz45V5p9jRi0xtJc/zxhCxnXYAekHHF1bVvvoa3aXMwl0GZ3Bc0mxP6vPLmbRcjNKdqfyZn1B3Q==}
     engines: {node: '>=16.12.0', npm: '>=6.14.0'}
     hasBin: true
-    peerDependencies:
-      sharp: ^0.31.3
-    peerDependenciesMeta:
-      sharp:
-        optional: true
     dependencies:
       '@astrojs/compiler': 1.3.0
       '@astrojs/language-server': 0.28.3
-      '@astrojs/markdown-remark': 2.1.2_astro@2.1.7
+      '@astrojs/markdown-remark': 2.1.2_astro@2.0.14
       '@astrojs/telemetry': 2.1.0
       '@astrojs/webapi': 2.1.0
       '@babel/core': 7.21.3
@@ -1506,7 +1502,6 @@ packages:
       '@types/yargs-parser': 21.0.0
       acorn: 8.8.2
       boxen: 6.2.1
-      chokidar: 3.5.3
       ci-info: 3.8.0
       common-ancestor-path: 1.0.1
       cookie: 0.5.0
@@ -1587,6 +1582,7 @@ packages:
   /binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
+    dev: true
 
   /bl/5.1.0:
     resolution: {integrity: sha512-tv1ZJHLfTDnXE6tMHv73YgSJaWR2AFuPwMntBe7XL/GBFHnT0CLnsHMogfk5+GzCDC5ZWarSCYaIGATZt9dNsQ==}
@@ -1719,6 +1715,7 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /ci-info/3.8.0:
     resolution: {integrity: sha512-eXTggHWSooYhq49F2opQhuHWgzucfF2YgODK4e1566GQs5BIfP30B0oenwBJHfWxAs2fyPB1s7Mg949zLf61Yw==}
@@ -2539,6 +2536,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       binary-extensions: 2.2.0
+    dev: true
 
   /is-buffer/2.0.5:
     resolution: {integrity: sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==}
@@ -3249,6 +3247,7 @@ packages:
   /normalize-path/3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /npm-run-path/4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -3476,6 +3475,7 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
 
   /rehype-parse/8.0.4:
     resolution: {integrity: sha512-MJJKONunHjoTh4kc3dsM1v3C9kGrrxvA3U8PxZlP2SjH8RNUSrb+lF7Y0KVaUDnGH2QZ5vAn7ulkiajM9ifuqg==}
@@ -3748,8 +3748,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /solid-js/1.6.16:
-    resolution: {integrity: sha512-Ng4CahvLlpGA3BXIMiiMdwhI8WpObZ8gXqm97GCKR4+MpnODs6Pdpco+tmVCY/4ZDFaEKDxz7WRLAAdoXdlY7w==}
+  /solid-js/1.6.11:
+    resolution: {integrity: sha512-JquQQHPArGq+i2PLURxJ99Pcz2/1docpbycSio/cKSA0SeI3z5zRjy0TNcH4NRYvbOLrcini+iovXwnexKabyw==}
     dependencies:
       csstype: 3.1.1
     dev: false

@@ -10,7 +10,10 @@
     "noErrorTruncation": true,
     "types": ["astro/client", "@cloudflare/workers-types"],
     "paths": {
-      "@layouts/*": ["src/layouts/*"]
+      "@layouts/*": ["src/layouts/*"],
+      "@components/*": ["src/components/*"],
+      "@constants": ["src/constants.ts"],
+      "@customTypes": ["src/customTypes.ts"]
     }
   }
 }
