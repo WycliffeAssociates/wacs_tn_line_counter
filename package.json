@@ -9,7 +9,7 @@
     "cf-preview": "pnpm run build && wrangler pages dev ./dist",
     "start": "astro dev",
     "build": "astro build",
-    "pnpm-build": "npm install -g pnpm && pnpm i && pnpm build",
+    "pnpm-build": "npm install -g pnpm && pnpm i --no-frozen-lockfile && pnpm build",
     "preview": "astro preview",
     "astro": "astro"
   },
