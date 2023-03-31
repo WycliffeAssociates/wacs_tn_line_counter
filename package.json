@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "cf-dev": "wrangler pages dev --proxy=3000 -- pnpm run dev",
-    "cf-preview": "pnpm run build && wrangler pages dev ./dist",
+    "cf-dev": "wrangler pages dev --proxy=3000 -- yarn dev",
+    "cf-preview": "yarn build && wrangler pages dev ./dist",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
