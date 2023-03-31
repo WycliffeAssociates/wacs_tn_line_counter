@@ -1,93 +1,26 @@
 ---
 import Layout from "@layouts/Layout.astro"
-import {unzip, unzipSync, Unzip, strFromU8, Unzipped, FlateError} from 'fflate'
-import Listing from "../../components/Result"
-import { BIBLE_BOOK_ORDER } from "src/constants"
-import { BookTable } from "src/components/BookTable"
 import { PreviewPane } from "src/components/PreviewPane"
-import { BookTable2 } from "src/components/BookTable2"
-// https://content.bibletranslationtools.org/api/swagger/
-// https://content.bibletranslationtools.org/
-// /repos/{owner}/{repo}/archive/{filepath}
-// ​/repos​/{owner}​/{repo}​/branches
+import { TableWrapper } from "src/components/TableWrapper"
+
 const baseUrl = "https://content.bibletranslationtools.org/api/v1/repos"
-// https://content.bibletranslationtools.org/api/v1/repos/WycliffeAssociates/en_tn_condensed/branches
+
 
 let { repo, user } = Astro.params
-// const url = "https://content.bibletranslationtools.org/WycliffeAssociates/en_tn_condensed/archive/master.zip"
-// https://content.bibletranslationtools.org/api/v1/repos/WycliffeAssociates/en_tn_condensed/archive/master.zip
+
 const branchesUrl = `${baseUrl}/${user}/${repo}/branches`
-// console.log({branchesUrl})
-const branchesRes = await fetch(branchesUrl);
+let branchesRes: Response
+try {
+	branchesRes = await fetch(branchesUrl);
+	if (!branchesRes.ok)  {
+		return new Response(404)
+	}
+} catch (error) {
+	console.error(error)
+	return new Response(404)
+
+}
 const branchesJson = await branchesRes.json()
-// const url = `https://content.bibletranslationtools.org/${user}/${repo}/archive/master.zip`
-
-// const res = await fetch(url)
-// const buffer = new Uint8Array(await res.arrayBuffer())
-
-// // todo: pass blob as downloadable
-// // const blob = new Blob([buffer.buffer])
-// // console.log(blob.size)
-
-// async function unzipFolder(): Promise<Unzipped | FlateError>  {
-// 	return new Promise((res, rej) => {
-// 		return unzip(buffer, (err, data) => {
-// 			if (err) rej(err) 
-// 			else {
-// 				 res(data)
-// 			}
-// 		} )
-// 	})
-// } 
-// const folder = await unzipFolder()
-// if (folder instanceof Error) {
-// 	return new Response('404', {
-// 		statusText: folder.message,
-// 		status: folder.code,
-// 	})
-// }
-// const regex = /.+\/[A-Za-z0-9]+\/[0-9]+\/[0-9]+.+/
-// const results = Object.entries(folder).filter(([name, data]) => (data.length && regex.test(name) )).map(([k,v]) => {
-// 	return {
-// 		name: k,
-// 	content: strFromU8(v)}
-// })
-// // console.log(results.map(v => v.name))
-// const data = BIBLE_BOOK_ORDER.reduce((acc:IRepo, key) => {
-//   results.forEach((obj) => {
-// 		const [book, chap, verse] = obj.name.split("/").slice(1, 4);
-// 		const verseLength = obj.content.split('\n').length - 1;
-//     if (book.toUpperCase() === key) { // check if the object belongs to the key
-// 			if (!acc[key]) {
-// 				acc[key] = {
-// 					name: book,
-// 					totalLineCount: 0,
-// 					chapters: [],
-// 					level: 'book'
-// 				}; // add the object to the key's data array
-// 			}
-// 			// console.log({acc})
-// 			const bookObj = acc[key];
-// 			// 
-//       acc[key].totalLineCount += verseLength // add the line count of the object to the key's lineCount
-// // 
-// 			const lastChapObj = bookObj.chapters[bookObj.chapters?.length - 1];
-//   bookObj.totalLineCount += verseLength; // add the line count to the book's total line count
-//   if (!lastChapObj || lastChapObj.chapNum !== chap) { // if the chapter doesn't exist in the book yet, create it
-//     bookObj.chapters.push({ chapNum: chap, chapterLineCount: 0, verses: [] , level:"chapter"});
-//   }
-//   const chapObj = bookObj.chapters[bookObj.chapters?.length - 1];
-//   chapObj.chapterLineCount += verseLength; // add the line count to the chapter's line count
-//   chapObj.verses.push({ verseNum: verse, verseLineCount: verseLength, content: obj.content, level:"verse" }); // add the object to the chapter's verses array
-//   return acc;
-//     }
-//   });
-//   return acc;
-// }, {});
-// console.log({result})
-// console.log(data[0])
-
-// console.log({asStrings})
 ---
 
 <Layout title="Welcome to Astro.">
@@ -105,7 +38,7 @@ const branchesJson = await branchesRes.json()
 
 			<div class="flex gap-2">
 				<div class="w-3/5">
-					<BookTable2 client:load branches={branchesJson} baseUrl={baseUrl} repo={String(repo)} user={String(user)} />
+					<TableWrapper client:load branches={branchesJson} baseUrl={baseUrl} repo={String(repo)} user={String(user)} />
 				</div>
 				<div class="w-2/5">
 					<PreviewPane client:idle/>
@@ -144,6 +77,7 @@ table {
 thead  {
   position: sticky;
   top: 0;
+	z-index: 10;
 }
 thead tr {
 	background: #aaa;

@@ -22,9 +22,8 @@ import type {
   ITableBetter,
 } from "src/customTypes";
 import {BookTable} from "./BookTable";
-import {BookTable3} from "./BookTable3";
 
-interface IBookTable2 {
+interface ITableWrapper {
   baseUrl: string;
   user: string;
   repo: string;
@@ -33,7 +32,7 @@ interface IBookTable2 {
   }>;
 }
 
-export function BookTable2(props: IBookTable2) {
+export function TableWrapper(props: ITableWrapper) {
   const [isFetchingLoading, setIsFetchingLoading] = createSignal("");
   const [forceRerenderOfTable, setForceRerenderOfTable] = createSignal(false);
   const [repoState, setRepoState] = createSignal({
@@ -49,19 +48,7 @@ export function BookTable2(props: IBookTable2) {
       branches: props.branches,
     },
   ]);
-  const initialData2 = BIBLE_BOOK_ORDER.reduce((acc: ITable, key, idx) => {
-    acc[key] = {
-      [String(props.repo)]: props.branches.map((branch) => {
-        return {
-          branchName: branch.name,
-          blob: null,
-          data: null,
-          repoName: String(props.repo),
-        };
-      }),
-    };
-    return acc;
-  }, {});
+
   const initialData3: ITableBetter = BIBLE_BOOK_ORDER.map((bookSlug) => {
     return {
       bookName: bookSlug,
@@ -101,8 +88,11 @@ export function BookTable2(props: IBookTable2) {
     setIsFetchingLoading(`Fetching the remote ${branchArg} zip file`);
     const branchZipUrl = `${props.baseUrl}/${props.user}/${repoArg}/archive/${branchArg}.zip`;
     console.time("fetch");
+    const cfFunctionsBase = import.meta.env.DEV
+      ? "http://127.0.0.1:8788/api"
+      : `${window.location.origin}/api`;
     const resp = await fetch(
-      `http://127.0.0.1:8788/api/getRemoteZip?user=${props.user}&branch=${branchArg}&repo=${repoArg}`,
+      `${cfFunctionsBase}/getRemoteZip?user=${props.user}&branch=${branchArg}&repo=${repoArg}`,
       {}
     );
     console.timeEnd("fetch");
@@ -156,6 +146,10 @@ export function BookTable2(props: IBookTable2) {
           content,
           level: "verse",
           verseLineCount: content.split("\n").length,
+          repoName: repoArg,
+          branchName: branchArg,
+          chapParent: chapterNum,
+          bookName: bookName,
         };
 
         if (chapterIndex === -1) {
@@ -241,7 +235,10 @@ export function BookTable2(props: IBookTable2) {
   });
   async function addRepoAndGetBranches(e: Event) {
     e.preventDefault();
-    const url = `http://127.0.0.1:8788/api/getRemoteBranches?user=${
+    const cfFunctionsBase = import.meta.env.DEV
+      ? "http://127.0.0.1:8788/api"
+      : `${window.location.origin}/api`;
+    const url = `${cfFunctionsBase}/getRemoteBranches?user=${
       repoState().username
     }&repo=${repoState().repo}`;
     const resp = await fetch(url);
@@ -345,8 +342,7 @@ export function BookTable2(props: IBookTable2) {
       <Show
         when={reposWithContentFetch()?.hasFetched && !forceRerenderOfTable()}
       >
-        {/* <BookTable data={reposWithContentFetch()} /> */}
-        <BookTable3 data={reposWithContentFetch()?.data} />
+        <BookTable data={reposWithContentFetch()?.data} />
       </Show>
     </div>
   );

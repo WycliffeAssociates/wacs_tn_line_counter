@@ -19,7 +19,6 @@
     "fflate": "^0.7.4",
     "remark-html": "^15.0.2",
     "remark-parse": "^10.0.1",
-    "solid-headless": "^0.13.1",
     "solid-js": "^1.4.3",
     "unified": "^10.1.2"
   },

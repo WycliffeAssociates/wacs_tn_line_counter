@@ -1,5 +1,5 @@
 import {Show} from "solid-js";
-import {htmlPreview} from "./SharedSignals";
+import {htmlPreview} from "../SharedSignals";
 
 export function PreviewPane() {
   return (

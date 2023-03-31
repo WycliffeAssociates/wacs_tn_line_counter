@@ -1,31 +1,21 @@
 import {
   flexRender,
   getCoreRowModel,
-  ColumnDef,
   createSolidTable,
   createColumnHelper,
   SortingState,
   getSortedRowModel,
-  ExpandedState,
-  getExpandedRowModel,
   Row,
+  CellContext,
 } from "@tanstack/solid-table";
 import remarkHtml from "remark-html";
 import remarkParse from "remark-parse";
 import {unified} from "unified";
 import {createMemo, createSignal, For, Show} from "solid-js";
-import type {
-  IRepo,
-  IRepoBook,
-  IRepoBucket,
-  IRepoChapter,
-  IRepoVerse,
-  ITableBetterEntry,
-} from "src/customTypes";
+import type {IRepoBucket, IRepoVerse} from "src/customTypes";
 import {TableRow} from "./TableRow";
-import {NestedTable} from "./NestedTable";
 import {Icon} from "./Icon";
-import {setHtmlPreview} from "./SharedSignals";
+import {setHtmlPreview} from "../SharedSignals";
 
 type VerseTableProps = {
   verseList: IRepoVerse[];
@@ -48,7 +38,6 @@ export function VerseTable(props: VerseTableProps) {
         columns: repo.branches.map((branch) => {
           return columnHelper.accessor(
             (verseRow) => {
-              debugger;
               const mb = branch.data.find(
                 (book) =>
                   book.name.toUpperCase() == props.bookName.toUpperCase()
@@ -62,6 +51,25 @@ export function VerseTable(props: VerseTableProps) {
               return matchingVerse?.verseLineCount;
             },
             {
+              cell(verse) {
+                return (
+                  <>
+                    <span class="inline-flex gap-2 items-center">
+                      <span>{String(verse.getValue())}</span>
+                      <button
+                        onClick={() => {
+                          renderPreviewPaneHtml(verse);
+                        }}
+                      >
+                        <Icon className="i-mdi-eye-plus block h-5 w-5 hover:text-green-400" />
+                      </button>
+                      <a href={getExternalHref(verse)}>
+                        <Icon className="block i-mdi-link-variant h-5 w-5" />
+                      </a>
+                    </span>
+                  </>
+                );
+              },
               header: branch.branchName,
               id: `${repo.repoName}-${branch.branchName}`,
             }
@@ -71,6 +79,49 @@ export function VerseTable(props: VerseTableProps) {
     });
     return arr;
   });
+  function getExternalHref(verse: CellContext<IRepoVerse, any>) {
+    const base =
+      "https://content.bibletranslationtools.org/WycliffeAssociates/en_tn/src/branch/master/oba/01/02.md";
+    const repoKey = verse.column.parent?.id;
+    const branchName = verse.column.columnDef.header;
+    const ogVerse = verse.row.original;
+    const book = ogVerse.bookName.toLowerCase();
+    const chap = ogVerse.chapParent;
+    const baseUrl = `https://content.bibletranslationtools.org/WycliffeAssociates/${repoKey}/src/branch/${branchName}/${book}/${chap}/${ogVerse.verseNum}`;
+    return baseUrl;
+  }
+  async function renderPreviewPaneHtml(verse: CellContext<IRepoVerse, any>) {
+    // traverse all data using table / row to make it correspond to cell.
+    const repoKey = verse.column.parent?.id;
+    const branchName = verse.column.columnDef.header;
+    let matchingRepo = props.colsByRepoBranch.find(
+      (repo) => repo.repoName == repoKey
+    );
+    let matchingBranch =
+      matchingRepo &&
+      matchingRepo.branches.find((branch) => branch.branchName == branchName);
+    let matchingBook =
+      matchingBranch &&
+      matchingBranch.data.find(
+        (book) => book.name == verse.row.original.bookName
+      );
+    let matchingChap =
+      matchingBook &&
+      matchingBook.chapters.find(
+        (chap) => chap.chapNum == verse.row.original.chapParent
+      );
+    let matchingVerse =
+      matchingChap &&
+      matchingChap.verses.find(
+        (vs) => vs.verseNum === verse.row.original.verseNum
+      );
+    const html = await unified()
+      .use(remarkParse)
+      .use(remarkHtml)
+      .process(String(matchingVerse?.content));
+    const htmlString = String(html.value);
+    setHtmlPreview(htmlString);
+  }
   const columns = [
     columnHelper.accessor("verseNum", {
       cell: (verse) => {
@@ -101,7 +152,7 @@ export function VerseTable(props: VerseTableProps) {
           verse.getValue()
         );
       },
-      header: "Chapter Number",
+      header: "Verse Number",
     }),
     ...addlCols(),
   ];
@@ -118,8 +169,6 @@ export function VerseTable(props: VerseTableProps) {
       onSortingChange: setSorting,
       getSortedRowModel: getSortedRowModel(),
       getCoreRowModel: getCoreRowModel(),
-      getExpandedRowModel: getExpandedRowModel(),
-      getRowCanExpand: () => true,
       columns: columns,
       // debugTable: true,
     });

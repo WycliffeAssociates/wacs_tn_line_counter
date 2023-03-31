@@ -14,18 +14,9 @@ import remarkHtml from "remark-html";
 import remarkParse from "remark-parse";
 import {unified} from "unified";
 import {createMemo, createSignal, For, Show} from "solid-js";
-import type {
-  IRepo,
-  IRepoBook,
-  IRepoBucket,
-  IRepoChapter,
-  IRepoVerse,
-  ITableBetterEntry,
-} from "src/customTypes";
+import type {IRepoBucket, IRepoChapter, IRepoVerse} from "src/customTypes";
 import {TableRow} from "./TableRow";
-import {NestedTable} from "./NestedTable";
 import {Icon} from "./Icon";
-import {setHtmlPreview} from "./SharedSignals";
 import {VerseTable} from "./VerseTable";
 
 type ChapterTableProps = {
@@ -59,12 +50,10 @@ export function ChapterTable(props: ChapterTableProps) {
                 matchingBook.chapters.find((chap) => {
                   const match = chap.chapNum == chapRow.chapNum;
                   if (!match) {
-                    debugger;
                   }
                   return match;
                 });
               if (!matchingBook || !matchingChapter) {
-                debugger;
               }
               return matchingChapter?.chapterLineCount;
             },
@@ -152,7 +141,7 @@ export function ChapterTable(props: ChapterTableProps) {
     }
     const vl = getVersesForChapter(props.bookList, row.original.chapNum);
     console.log({vl});
-    debugger;
+
     return (
       <VerseTable
         verseList={vl}

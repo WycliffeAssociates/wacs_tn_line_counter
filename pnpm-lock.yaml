@@ -12,7 +12,6 @@ specifiers:
   fflate: ^0.7.4
   remark-html: ^15.0.2
   remark-parse: ^10.0.1
-  solid-headless: ^0.13.1
   solid-js: ^1.4.3
   unified: ^10.1.2
   unocss: ^0.50.6
@@ -26,7 +25,6 @@ dependencies:
   fflate: 0.7.4
   remark-html: 15.0.2
   remark-parse: 10.0.1
-  solid-headless: 0.13.1_solid-js@1.6.16
   solid-js: 1.6.16
   unified: 10.1.2
 
@@ -3516,29 +3514,10 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /solid-headless/0.13.1_solid-js@1.6.16:
-    resolution: {integrity: sha512-FZJai49YmdBu6oEo8aJGPMQ1Qn8xiW0cnD6vNFDIQWMKJdXEUtDEwz0hTR9aZ7Epq3IkrZs+98E0vNiv1+pZpA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      solid-js: ^1.2
-    dependencies:
-      solid-js: 1.6.16
-      solid-use: 0.6.2_solid-js@1.6.16
-    dev: false
-
   /solid-js/1.6.16:
     resolution: {integrity: sha512-Ng4CahvLlpGA3BXIMiiMdwhI8WpObZ8gXqm97GCKR4+MpnODs6Pdpco+tmVCY/4ZDFaEKDxz7WRLAAdoXdlY7w==}
     dependencies:
       csstype: 3.1.1
-    dev: false
-
-  /solid-use/0.6.2_solid-js@1.6.16:
-    resolution: {integrity: sha512-0ShJ5s+4PIN0pJB/BtsQucsZB+xnUeeTGaxErQDu6USn5jygZWXicAtOEvFbI8gv40xE751uY1Tz7Aib9lxL/Q==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      solid-js: ^1.5
-    dependencies:
-      solid-js: 1.6.16
     dev: false
 
   /source-map-js/1.0.2:

@@ -21,6 +21,9 @@ export interface IRepoVerse {
   content: string;
   level: "verse";
   chapParent?: string;
+  branchName?: string;
+  repoName?: string;
+  bookName: string;
 }
 
 export interface IRepo {

@@ -8,74 +8,131 @@ import {
   getSortedRowModel,
   ExpandedState,
   getExpandedRowModel,
+  Row,
 } from "@tanstack/solid-table";
-import {createSignal, For, Show} from "solid-js";
-import type {IRepo, IRepoBook} from "src/customTypes";
+import {createMemo, createSignal, For, Show} from "solid-js";
+import type {
+  IBranchType,
+  IRepo,
+  IRepoBook,
+  IRepoBucket,
+  IRepoChapter,
+  IRepository,
+  ITable,
+  ITableBetter,
+  ITableBetterEntry,
+  ITableRepoType,
+  ITableStructure,
+} from "src/customTypes";
 import {ChapterTable} from "./ChapterTable";
-import {RowActions} from "./RowActions";
 import {TableRow} from "./TableRow";
 import {Icon} from "./Icon";
 
 type IBookTable = {
-  data: IRepo;
+  data: ITableBetter;
 };
 export function BookTable(props: IBookTable) {
-  const [data, setData] = createSignal(Object.values(props.data));
-  console.log(data());
-  const [openNestedRows, setOpenNestedRows] = createSignal([]);
   const [sorting, setSorting] = createSignal<SortingState>([]);
+  // the changing columns seems to reset expanded state, so manually track rows here
+  const [expandedRows, setExpandedRows] = createSignal<string[]>([]);
 
-  const columnHelper = createColumnHelper<IRepoBook>();
-  const columns = [
-    // columnHelper.display({
-    //   id: "actions",
-    //   cell: (props) => (
-    //     <RowActions
-    //       row={props.row}
-    //       setOpenNestedRows={setOpenNestedRows}
-    //       openNestedRows={openNestedRows}
-    //     />
-    //   ),
-    // }),
-    // columnHelper.accessor("name", {
-    //   cell: ({row, getValue}) => (
-    //     <div
-    //       style={{
-    //         // Since rows are flattened by default,
-    //         // we can use the row.depth property
-    //         // and paddingLeft to visually indicate the depth
-    //         // of the row
-    //         "padding-left": `${row.depth * 2}rem`,
-    //       }}
-    //     >
-    //       <>
-    //         {row.getCanExpand() ? (
-    //           <button
-    //             {...{
-    //               onClick: row.getToggleExpandedHandler(),
-    //               style: {cursor: "pointer"},
-    //             }}
-    //           >
-    //             {row.getIsExpanded() ? "👇" : "👉"}
-    //           </button>
-    //         ) : (
-    //           "🔵"
-    //         )}{" "}
-    //         {getValue()}
-    //       </>
-    //     </div>
-    //   ),
+  const repoBuckets2 = createMemo(() => {
+    const repoMap: Map<
+      string,
+      {repoName: string; branches: {branchName: string; data: IRepoBook[]}[]}
+    > = new Map();
 
-    //   header: "Text",
-    // }),
-    columnHelper.accessor("name", {
+    props.data.forEach((book) => {
+      book.repositories.forEach((repository) => {
+        const repoName = repository.name;
+        repository.branches.forEach((branch) => {
+          const branchName = branch.branchName;
+          if (branch.data) {
+            if (!repoMap.has(repoName)) {
+              repoMap.set(repoName, {repoName: repoName, branches: []});
+            }
+            const repo = repoMap.get(repoName)!;
+            let branchData = repo.branches.find(
+              (b) => b.branchName === branchName
+            );
+            if (!branchData) {
+              // doesn't exist init branch
+              branchData = {branchName: branchName, data: []};
+              repo.branches.push(branchData);
+            }
+            branchData.data.push(branch.data);
+            // branchData.data.push(...branch.data);
+          }
+        });
+      });
+    });
+
+    const repoBucket: IRepoBucket = [];
+
+    repoMap.forEach((value) => {
+      repoBucket.push(value);
+    });
+    console.log({repoBucket});
+    return repoBucket;
+  });
+
+  const columnHelper = createColumnHelper<ITableBetterEntry>();
+  const addlCols = createMemo(() => {
+    const arr = repoBuckets2().map((repo) => {
+      let col = columnHelper.group({
+        header: repo.repoName,
+        columns: repo.branches.map((branch) => {
+          const dataCol = columnHelper.accessor(
+            (row) => {
+              return matchData({
+                row: row,
+                argBranch: branch.branchName,
+                argRepoName: repo.repoName,
+                data: branch.data,
+              });
+            },
+            {
+              cell: (val) => (
+                <span>
+                  {new Intl.NumberFormat(navigator.language).format(
+                    Number(val.getValue())
+                  )}
+                </span>
+              ),
+              id: `${repo.repoName}-${branch.branchName}`,
+              // 🧠 An easy way to remember: If you define a column with an accessor function, either provide a string header or provide a unique id property. This looks unwieldy, but otherwise, if the header is the same, it won't deduplicate the columns as needed.  tricky tricky..
+              // header: `${repo.repoName}-${branch.branchName}`,
+              header: branch.branchName,
+            }
+          );
+          return dataCol;
+        }),
+      });
+
+      return col;
+    });
+
+    return arr;
+  });
+  const cols = createMemo(() => [
+    // Every book of bib;
+    columnHelper.accessor("bookName", {
       cell: (book) => {
         return book.row.getCanExpand() ? (
           <button
-            onClick={book.row.getToggleExpandedHandler()}
+            onClick={() => {
+              // add if not present in arr of expandeds, or remove if so.
+              if (expandedRows().includes(book.row.id)) {
+                setExpandedRows(
+                  expandedRows().filter((row) => row != book.row.id)
+                );
+              } else {
+                setExpandedRows((prev) => [...prev, book.row.id]);
+              }
+            }}
             class="cursor-pointer inline-flex items-center gap-1"
           >
-            {book.row.getIsExpanded() ? (
+            {expandedRows().includes(book.row.id) ? (
               <Icon className="i-mdi-arrow-down-bold" text={book.getValue()} />
             ) : (
               <Icon className="i-mdi-arrow-right-bold" text={book.getValue()} />
@@ -87,44 +144,125 @@ export function BookTable(props: IBookTable) {
       },
       header: "Book Name",
     }),
-    columnHelper.accessor("totalLineCount", {
-      cell: (book) => Number(book.getValue()),
-      header: "Book Line Count",
-      // invertSorting: true,
-    }),
-  ];
-  const table = createSolidTable({
-    get data() {
-      return data();
-    },
-    state: {
-      get sorting() {
-        return sorting();
+    ...addlCols(),
+  ]);
+
+  function matchData({
+    row,
+    argBranch,
+    argRepoName,
+    data,
+  }: {
+    row: ITableBetterEntry;
+    argBranch: string;
+    argRepoName: string;
+    data: IRepoBook[];
+  }) {
+    const matchingBook = data.find(
+      (book) => book.name.toUpperCase() == row.bookName.toUpperCase()
+    );
+    return matchingBook?.totalLineCount || "";
+    // console.count(argBranch);
+    // console.count(argRepoName);
+    // const repo = row.repositories.find((repo) => repo.name == argRepoName);
+    // const matchingBranchForThisData =
+    //   repo && repo.branches.find((branch) => branch.branchName == argBranch);
+    // const matchingLineCount =
+    //   matchingBranchForThisData &&
+    //   matchingBranchForThisData.data?.totalLineCount;
+    // return matchingLineCount || "";
+  }
+
+  const table = () =>
+    createSolidTable({
+      get data() {
+        return props.data;
       },
-    },
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => true,
-    columns: columns,
-    debugTable: true,
-  });
+      state: {
+        get sorting() {
+          return sorting();
+        },
+      },
+      onSortingChange: setSorting,
+      getSortedRowModel: getSortedRowModel(),
+      getCoreRowModel: getCoreRowModel(),
+      getExpandedRowModel: getExpandedRowModel(),
+      getRowCanExpand: () => true,
+      columns: cols(),
+      // debugAll: true,
 
-  const renderChaptersTable = (props) => {
-    return <ChapterTable row={props.row} />;
+      // debugTable: true,
+    });
+  /*  Type 'ColumnDef<[string, ITableRepoType], unknown>[]' is not assignable to type 'ColumnDef<[string, ITableRepoType], any>' */
+  const renderChaptersTable = (row: Row<ITableBetterEntry>) => {
+    // row.original.bookName
+    function getChaptersForBook(
+      entries: ITableBetterEntry[],
+      bookName: string
+    ): IRepoChapter[] {
+      const chapters: IRepoChapter[] = [];
+      const uniqueChapters = new Set<string>();
+
+      // find the entry for the specified bookName
+
+      const entry = entries.find((e) => e.bookName === bookName);
+
+      // if the entry is found, map the branches to chapters with bookParent set to bookName
+      if (entry) {
+        entry.repositories.forEach((repo) => {
+          repo.branches.forEach((branch) => {
+            branch.data?.chapters.forEach((chapter) => {
+              if (!uniqueChapters.has(chapter.chapNum)) {
+                const {chapNum, chapterLineCount, verses, level} = chapter;
+
+                const chapterObj: IRepoChapter = {
+                  chapNum,
+                  chapterLineCount,
+                  verses,
+                  level,
+                  bookParent: bookName,
+                };
+                uniqueChapters.add(chapter.chapNum);
+                chapters.push(chapterObj);
+              }
+            });
+          });
+        });
+      }
+
+      return chapters;
+    }
+
+    const chaps = getChaptersForBook(props.data, row.original.bookName);
+    const colsByRepoBranch = repoBuckets2();
+    // const chapterProps = () => {
+    //   return createIRepoChapterArray(colsByRepoBranch);
+    // };
+    // 1. Arr of chapters col
+    // 2. addl cols will be Col group for repoBuckets2.  I.e. each repo, and its respective branches.
+
+    return (
+      <ChapterTable
+        bookList={chaps}
+        colsByRepoBranch={colsByRepoBranch}
+        bookName={row.original.bookName}
+      />
+    );
   };
-
+  function db(row) {
+    const isExp = expandedRows().includes(row.id);
+    return isExp;
+  }
   return (
-    <div class="w-full mx-auto">
+    <div class="w-max ">
       <table class="w-full">
         <thead class="m-0  border-b border-b-black bg-grey-300 w-full">
-          <For each={table.getHeaderGroups()}>
+          <For each={table().getHeaderGroups()}>
             {(headerGroup) => (
               <tr>
                 <For each={headerGroup.headers}>
                   {(header) => (
-                    <th class="pr-4  bg-gray-300">
+                    <th class="pr-4  bg-gray-300" colSpan={header.colSpan}>
                       <Show when={!header.isPlaceholder}>
                         <div
                           class={
@@ -152,15 +290,14 @@ export function BookTable(props: IBookTable) {
           </For>
         </thead>
         <tbody>
-          <For each={table.getRowModel().rows}>
+          <For each={table().getRowModel().rows}>
             {(row) => (
               <>
                 <TableRow row={row} />
-                {row.getIsExpanded() && (
+                {db(row) && (
                   <tr>
-                    {/* 2nd row is a custom 1 cell row */}
                     <td colSpan={row.getVisibleCells().length}>
-                      {renderChaptersTable({row})}
+                      {renderChaptersTable(row)}
                     </td>
                   </tr>
                 )}
@@ -169,7 +306,6 @@ export function BookTable(props: IBookTable) {
           </For>
         </tbody>
       </table>
-      <div class="h-4" />
     </div>
   );
 }
