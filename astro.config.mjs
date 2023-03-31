@@ -5,6 +5,7 @@ import solidJs from "@astrojs/solid-js";
 import UnoCSS from "unocss/astro";
 import {presetUno} from "unocss";
 import transformerVariantGroup from "@unocss/transformer-variant-group";
+import {presetIcons} from "unocss";
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,7 +16,7 @@ export default defineConfig({
   integrations: [
     solidJs(),
     UnoCSS({
-      presets: [presetUno()],
+      presets: [presetUno(), presetIcons()],
       transformers: [transformerVariantGroup()],
     }),
   ],
