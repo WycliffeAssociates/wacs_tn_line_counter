@@ -8,7 +8,7 @@
     "cf-dev": "wrangler pages dev --proxy=3000 -- npm run dev",
     "cf-preview": "npm run build && wrangler pages dev ./dist",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build -- --experimental-fetch",
     "preview": "astro preview",
     "astro": "astro"
   },
