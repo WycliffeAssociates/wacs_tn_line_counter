@@ -74,11 +74,11 @@ export function TableWrapper(props: ITableWrapper) {
     setIsFetchingLoading(`Fetching the remote ${branchArg} zip file`);
     const branchZipUrl = `${props.baseUrl}/${props.user}/${repoArg}/archive/${branchArg}.zip`;
     console.time("fetch");
-    const cfFunctionsBase = import.meta.env.DEV
-      ? "http://127.0.0.1:8788/api"
-      : `${window.location.origin}/api`;
+    // const cfFunctionsBase = import.meta.env.DEV
+    //   ? "http://127.0.0.1:8788/api"
+    //   : `${window.location.origin}/api`;
     const resp = await fetch(
-      `${cfFunctionsBase}/getRemoteZip?user=${props.user}&branch=${branchArg}&repo=${repoArg}`,
+      `${window.location.origin}/api/getRemoteZip?user=${props.user}&branch=${branchArg}&repo=${repoArg}`,
       {}
     );
     console.timeEnd("fetch");
@@ -221,10 +221,11 @@ export function TableWrapper(props: ITableWrapper) {
   });
   async function addRepoAndGetBranches(e: Event) {
     e.preventDefault();
-    const cfFunctionsBase = import.meta.env.DEV
-      ? "http://127.0.0.1:8788/api"
-      : `${window.location.origin}/api`;
-    const url = `${cfFunctionsBase}/getRemoteBranches?user=${
+    // const cfFunctionsBase = import.meta.env.DEV
+    //   ? "http://127.0.0.1:8788/api"
+    //   : `${window.location.origin}/api`;
+
+    const url = `${window.location.origin}/api/getRemoteBranches?user=${
       repoState().username
     }&repo=${repoState().repo}`;
     const resp = await fetch(url);
